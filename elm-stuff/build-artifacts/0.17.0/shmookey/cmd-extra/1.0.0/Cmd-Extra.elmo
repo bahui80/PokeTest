@@ -1,0 +1,7 @@
+var _shmookey$cmd_extra$Cmd_Extra$message = function (x) {
+	return A3(
+		_elm_lang$core$Task$perform,
+		_elm_lang$core$Basics$identity,
+		_elm_lang$core$Basics$identity,
+		_elm_lang$core$Task$succeed(x));
+};

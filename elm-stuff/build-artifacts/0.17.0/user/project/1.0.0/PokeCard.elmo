@@ -1,0 +1,112 @@
+var _user$project$PokeCard$getImage = function (model) {
+	var _p0 = model.face;
+	if (_p0.ctor === 'Back') {
+		return 'images/cardBack.jpg';
+	} else {
+		return model.image;
+	}
+};
+var _user$project$PokeCard$isFound = function (model) {
+	var _p1 = model.face;
+	if (_p1.ctor === 'Found') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var _user$project$PokeCard$isFacingFront = function (model) {
+	var _p2 = model.face;
+	if (_p2.ctor === 'Front') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var _user$project$PokeCard$Model = F2(
+	function (a, b) {
+		return {face: a, image: b};
+	});
+var _user$project$PokeCard$Found = {ctor: 'Found'};
+var _user$project$PokeCard$setCardFound = function (model) {
+	var _p3 = model.face;
+	if (_p3.ctor === 'Front') {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{face: _user$project$PokeCard$Found});
+	} else {
+		return model;
+	}
+};
+var _user$project$PokeCard$Front = {ctor: 'Front'};
+var _user$project$PokeCard$Back = {ctor: 'Back'};
+var _user$project$PokeCard$init = function (image) {
+	return A2(_user$project$PokeCard$Model, _user$project$PokeCard$Back, image);
+};
+var _user$project$PokeCard$flipCard = function (model) {
+	var _p4 = model.face;
+	switch (_p4.ctor) {
+		case 'Front':
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{face: _user$project$PokeCard$Back});
+		case 'Back':
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{face: _user$project$PokeCard$Front});
+		default:
+			return model;
+	}
+};
+var _user$project$PokeCard$update = F2(
+	function (msg, model) {
+		var _p5 = msg;
+		return _user$project$PokeCard$flipCard(model);
+	});
+var _user$project$PokeCard$setCardBack = function (model) {
+	var _p6 = model.face;
+	if (_p6.ctor === 'Found') {
+		return model;
+	} else {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{face: _user$project$PokeCard$Back});
+	}
+};
+var _user$project$PokeCard$Flip = {ctor: 'Flip'};
+var _user$project$PokeCard$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('col-lg-2 col-sm-3 col-xs-3')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$img,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$PokeCard$Flip),
+						_elm_lang$html$Html_Attributes$src(
+						_user$project$PokeCard$getImage(model)),
+						_elm_lang$html$Html_Attributes$style(
+						_elm_lang$core$Native_List.fromArray(
+							[
+								{ctor: '_Tuple2', _0: 'display', _1: 'block'},
+								{ctor: '_Tuple2', _0: 'margin', _1: 'auto'},
+								{ctor: '_Tuple2', _0: 'width', _1: '80%'},
+								{ctor: '_Tuple2', _0: 'margin-bottom', _1: '10px'}
+							]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[]))
+			]));
+};
+var _user$project$PokeCard$main = {
+	main: _elm_lang$html$Html_App$beginnerProgram(
+		{
+			model: _user$project$PokeCard$init('images/blastoise.jpg'),
+			update: _user$project$PokeCard$update,
+			view: _user$project$PokeCard$view
+		})
+};

@@ -1,0 +1,577 @@
+var _user$project$Main$stylesheet = function () {
+	var children = _elm_lang$core$Native_List.fromArray(
+		[]);
+	var attrs = _elm_lang$core$Native_List.fromArray(
+		[
+			A2(_elm_lang$html$Html_Attributes$attribute, 'rel', 'stylesheet'),
+			A2(_elm_lang$html$Html_Attributes$attribute, 'property', 'stylesheet'),
+			A2(_elm_lang$html$Html_Attributes$attribute, 'href', 'css/bootstrap.css')
+		]);
+	var tag = 'link';
+	return A3(_elm_lang$html$Html$node, tag, attrs, children);
+}();
+var _user$project$Main$getFoundCards = function (cards) {
+	return A2(
+		_elm_lang$core$List$filter,
+		function (indexedCard) {
+			return _user$project$PokeCard$isFound(indexedCard.model);
+		},
+		cards);
+};
+var _user$project$Main$setCardsFound = function (cards) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (indexedCard) {
+			return _elm_lang$core$Native_Utils.update(
+				indexedCard,
+				{
+					model: _user$project$PokeCard$setCardFound(indexedCard.model)
+				});
+		},
+		cards);
+};
+var _user$project$Main$setAllCardsBack = function (cards) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (indexedCard) {
+			return _elm_lang$core$Native_Utils.update(
+				indexedCard,
+				{
+					model: _user$project$PokeCard$setCardBack(indexedCard.model)
+				});
+		},
+		cards);
+};
+var _user$project$Main$getFrontCards = function (cards) {
+	return A2(
+		_elm_lang$core$List$filter,
+		function (indexedCard) {
+			return _user$project$PokeCard$isFacingFront(indexedCard.model);
+		},
+		cards);
+};
+var _user$project$Main$checkPairOfCards = function (model) {
+	var f = F2(
+		function (value, acc) {
+			return A2(_elm_lang$core$List$member, value.model, acc) ? acc : A2(_elm_lang$core$List_ops['::'], value.model, acc);
+		});
+	return _elm_lang$core$Native_Utils.cmp(
+		_elm_lang$core$List$length(
+			A3(
+				_elm_lang$core$List$foldl,
+				f,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				model)),
+		1) < 1;
+};
+var _user$project$Main$checkCards = function (cards) {
+	var frontCards = _user$project$Main$getFrontCards(cards);
+	var totalFrontCards = _elm_lang$core$List$length(frontCards);
+	return (_elm_lang$core$Native_Utils.eq(totalFrontCards, 2) && _user$project$Main$checkPairOfCards(frontCards)) ? _user$project$Main$setCardsFound(cards) : ((_elm_lang$core$Native_Utils.cmp(totalFrontCards, 2) > 0) ? _user$project$Main$setAllCardsBack(cards) : cards);
+};
+var _user$project$Main$cardsList = A2(
+	_elm_lang$core$List$map,
+	function (image) {
+		return _user$project$PokeCard$init(image);
+	},
+	_elm_lang$core$Native_List.fromArray(
+		['images/blastoise.jpg', 'images/charmeleon.jpg', 'images/raichu.jpg', 'images/diglett.jpg', 'images/venusaur.jpg', 'images/mewto.jpg', 'images/ninetales.jpg', 'images/scyther.jpg', 'images/wigglytuff.jpg', 'images/pikachu.jpg', 'images/omanyte.jpg', 'images/jynx.jpg']));
+var _user$project$Main$Model = F4(
+	function (a, b, c, d) {
+		return {cards: a, startTime: b, currentTime: c, gameState: d};
+	});
+var _user$project$Main$IndexedCard = F2(
+	function (a, b) {
+		return {id: a, model: b};
+	});
+var _user$project$Main$indexList = A2(
+	_elm_lang$core$List$map,
+	function (index) {
+		return _user$project$Main$IndexedCard(index);
+	},
+	_elm_lang$core$Native_List.range(
+		0,
+		_elm_lang$core$List$length(_user$project$Main$cardsList) * 2));
+var _user$project$Main$indexedCardList = A3(
+	_elm_lang$core$List$map2,
+	F2(
+		function (x, y) {
+			return x(y);
+		}),
+	_user$project$Main$indexList,
+	A2(_elm_lang$core$Basics_ops['++'], _user$project$Main$cardsList, _user$project$Main$cardsList));
+var _user$project$Main$updateCard = F3(
+	function (targetId, msg, _p0) {
+		var _p1 = _p0;
+		var _p3 = _p1.model;
+		var _p2 = _p1.id;
+		return A2(
+			_user$project$Main$IndexedCard,
+			_p2,
+			_elm_lang$core$Native_Utils.eq(targetId, _p2) ? A2(_user$project$PokeCard$update, msg, _p3) : _p3);
+	});
+var _user$project$Main$updateCards = F3(
+	function (id, message, cards) {
+		return A2(
+			_elm_lang$core$List$map,
+			A2(_user$project$Main$updateCard, id, message),
+			cards);
+	});
+var _user$project$Main$Finished = {ctor: 'Finished'};
+var _user$project$Main$InProgress = {ctor: 'InProgress'};
+var _user$project$Main$checkGameState = function (cards) {
+	return _elm_lang$core$Native_Utils.eq(
+		_elm_lang$core$List$length(cards),
+		_elm_lang$core$List$length(
+			_user$project$Main$getFoundCards(cards))) ? _user$project$Main$Finished : _user$project$Main$InProgress;
+};
+var _user$project$Main$NewGame = {ctor: 'NewGame'};
+var _user$project$Main$init = {
+	ctor: '_Tuple2',
+	_0: A4(
+		_user$project$Main$Model,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		0,
+		0,
+		_user$project$Main$NewGame),
+	_1: _elm_lang$core$Platform_Cmd$none
+};
+var _user$project$Main$ChangeGameState = function (a) {
+	return {ctor: 'ChangeGameState', _0: a};
+};
+var _user$project$Main$Tick = function (a) {
+	return {ctor: 'Tick', _0: a};
+};
+var _user$project$Main$subscriptions = function (model) {
+	var _p4 = model.gameState;
+	if (_p4.ctor === 'InProgress') {
+		return A2(_elm_lang$core$Time$every, _elm_lang$core$Time$second, _user$project$Main$Tick);
+	} else {
+		return _elm_lang$core$Platform_Sub$none;
+	}
+};
+var _user$project$Main$MainMenu = {ctor: 'MainMenu'};
+var _user$project$Main$Start = {ctor: 'Start'};
+var _user$project$Main$FlipCard = F2(
+	function (a, b) {
+		return {ctor: 'FlipCard', _0: a, _1: b};
+	});
+var _user$project$Main$viewIndexedCard = function (_p5) {
+	var _p6 = _p5;
+	return A2(
+		_elm_lang$html$Html_App$map,
+		_user$project$Main$FlipCard(_p6.id),
+		_user$project$PokeCard$view(_p6.model));
+};
+var _user$project$Main$view = function (model) {
+	var totalTime = model.currentTime - model.startTime;
+	var date = _elm_lang$core$Date$fromTime(totalTime);
+	var indexedCards = A2(_elm_lang$core$List$map, _user$project$Main$viewIndexedCard, model.cards);
+	var _p7 = model.gameState;
+	switch (_p7.ctor) {
+		case 'NewGame':
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('jumbotron')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Main$stylesheet,
+						A2(
+						_elm_lang$html$Html$h1,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+										{ctor: '_Tuple2', _0: 'font-weight', _1: 'bold'},
+										{ctor: '_Tuple2', _0: 'font-size', _1: '70px'},
+										{ctor: '_Tuple2', _0: 'font-family', _1: 'Lora, Georgia, Times New Roman, Times, serif'}
+									]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Poketest')
+							])),
+						A2(
+						_elm_lang$html$Html$p,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+										{ctor: '_Tuple2', _0: 'font-family', _1: 'Lora, Georgia, Times New Roman, Times, serif'}
+									]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Welcome to the memotest of Pokemon. To win the game you must help Ash to catch them all!')
+							])),
+						A2(
+						_elm_lang$html$Html$img,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$src('images/ash_pokeball.png'),
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'display', _1: 'block'},
+										{ctor: '_Tuple2', _0: 'margin', _1: 'auto'},
+										{ctor: '_Tuple2', _0: 'height', _1: '320px'},
+										{ctor: '_Tuple2', _0: 'width', _1: '320px'}
+									]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Events$onClick(_user$project$Main$Start),
+								_elm_lang$html$Html_Attributes$class('btn btn-primary'),
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'display', _1: 'block'},
+										{ctor: '_Tuple2', _0: 'margin', _1: 'auto'}
+									]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('CATCH THEM!')
+							]))
+					]));
+		case 'InProgress':
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('container-fluid')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Main$stylesheet,
+						A2(
+						_elm_lang$html$Html$audio,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$id('player'),
+								_elm_lang$html$Html_Attributes$src('sounds/pokemon_song.mp3'),
+								_elm_lang$html$Html_Attributes$autoplay(true),
+								_elm_lang$html$Html_Attributes$loop(true)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('row-fluid')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$div,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('col-lg-2')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_elm_lang$html$Html$h1,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$style(
+												_elm_lang$core$Native_List.fromArray(
+													[
+														{ctor: '_Tuple2', _0: 'font-family', _1: 'Lora, Georgia, Times New Roman, Times, serif'},
+														{ctor: '_Tuple2', _0: 'text-align', _1: 'center'}
+													]))
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html$text('Total time')
+											])),
+										A2(
+										_elm_lang$html$Html$h1,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$style(
+												_elm_lang$core$Native_List.fromArray(
+													[
+														{ctor: '_Tuple2', _0: 'color', _1: 'green'},
+														{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+														{ctor: '_Tuple2', _0: 'font-weight', _1: 'bold'},
+														{ctor: '_Tuple2', _0: 'font-family', _1: 'Lora, Georgia, Times New Roman, Times, serif'}
+													]))
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html$text(
+												_elm_lang$core$String$concat(
+													_elm_lang$core$Native_List.fromArray(
+														[
+															_elm_lang$core$Basics$toString(
+															_elm_lang$core$Date$minute(date)),
+															':',
+															_elm_lang$core$Basics$toString(
+															_elm_lang$core$Date$second(date))
+														])))
+											])),
+										A2(
+										_elm_lang$html$Html$br,
+										_elm_lang$core$Native_List.fromArray(
+											[]),
+										_elm_lang$core$Native_List.fromArray(
+											[])),
+										A2(
+										_elm_lang$html$Html$button,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Events$onClick(_user$project$Main$Start),
+												_elm_lang$html$Html_Attributes$class('btn btn-danger'),
+												_elm_lang$html$Html_Attributes$style(
+												_elm_lang$core$Native_List.fromArray(
+													[
+														{ctor: '_Tuple2', _0: 'margin', _1: 'auto'},
+														{ctor: '_Tuple2', _0: 'display', _1: 'block'}
+													]))
+											]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html$text('Restart')
+											]))
+									])),
+								A2(
+								_elm_lang$html$Html$div,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('col-lg-10')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_elm_lang$html$Html$div,
+										_elm_lang$core$Native_List.fromArray(
+											[
+												_elm_lang$html$Html_Attributes$class('col-lg-12'),
+												_elm_lang$html$Html_Attributes$style(
+												_elm_lang$core$Native_List.fromArray(
+													[
+														{ctor: '_Tuple2', _0: 'margin-top', _1: '10px'}
+													]))
+											]),
+										indexedCards)
+									]))
+							]))
+					]));
+		default:
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('jumbotron')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Main$stylesheet,
+						A2(
+						_elm_lang$html$Html$h1,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+										{ctor: '_Tuple2', _0: 'font-weight', _1: 'bold'},
+										{ctor: '_Tuple2', _0: 'font-family', _1: 'Lora, Georgia, Times New Roman, Times, serif'}
+									]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('You catched them all!')
+							])),
+						A2(
+						_elm_lang$html$Html$img,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$src('images/pokeball.gif'),
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'display', _1: 'block'},
+										{ctor: '_Tuple2', _0: 'margin', _1: 'auto'}
+									]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$h2,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+										{ctor: '_Tuple2', _0: 'font-family', _1: 'Lora, Georgia, Times New Roman, Times, serif'}
+									]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Your time')
+							])),
+						A2(
+						_elm_lang$html$Html$h1,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'color', _1: 'green'},
+										{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+										{ctor: '_Tuple2', _0: 'font-weight', _1: 'bold'},
+										{ctor: '_Tuple2', _0: 'font-family', _1: 'Lora, Georgia, Times New Roman, Times, serif'}
+									]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(
+								_elm_lang$core$String$concat(
+									_elm_lang$core$Native_List.fromArray(
+										[
+											_elm_lang$core$Basics$toString(
+											_elm_lang$core$Date$minute(date)),
+											':',
+											_elm_lang$core$Basics$toString(
+											_elm_lang$core$Date$second(date))
+										])))
+							])),
+						A2(
+						_elm_lang$html$Html$br,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$br,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$br,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Events$onClick(_user$project$Main$MainMenu),
+								_elm_lang$html$Html_Attributes$class('btn btn-primary'),
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'display', _1: 'block'},
+										{ctor: '_Tuple2', _0: 'margin', _1: 'auto'}
+									]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Play again')
+							]))
+					]));
+	}
+};
+var _user$project$Main$ShuffleCards = function (a) {
+	return {ctor: 'ShuffleCards', _0: a};
+};
+var _user$project$Main$shuffleCards = function (cards) {
+	return A2(
+		_elm_lang$core$Random$generate,
+		_user$project$Main$ShuffleCards,
+		_elm_community$random_extra$Random_Array$shuffle(
+			_elm_lang$core$Array$fromList(_user$project$Main$indexedCardList)));
+};
+var _user$project$Main$update = F2(
+	function (msg, _p8) {
+		var _p9 = _p8;
+		var _p13 = _p9;
+		var _p12 = _p9.cards;
+		var _p10 = msg;
+		switch (_p10.ctor) {
+			case 'Start':
+				return {
+					ctor: '_Tuple2',
+					_0: A4(
+						_user$project$Main$Model,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						0,
+						0,
+						_user$project$Main$InProgress),
+					_1: _user$project$Main$shuffleCards(_user$project$Main$indexedCardList)
+				};
+			case 'ShuffleCards':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						_p13,
+						{
+							cards: _elm_lang$core$Array$toList(_p10._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'Tick':
+				var _p11 = _p10._0;
+				return _elm_lang$core$Native_Utils.eq(_p9.startTime, 0) ? {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						_p13,
+						{startTime: _p11, currentTime: _p11}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				} : {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						_p13,
+						{currentTime: _p11}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'FlipCard':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						_p13,
+						{
+							cards: _user$project$Main$checkCards(
+								A3(_user$project$Main$updateCards, _p10._0, _p10._1, _p12))
+						}),
+					_1: _shmookey$cmd_extra$Cmd_Extra$message(
+						_user$project$Main$ChangeGameState(_p9.gameState))
+				};
+			case 'ChangeGameState':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						_p13,
+						{
+							gameState: _user$project$Main$checkGameState(_p12)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return _user$project$Main$init;
+		}
+	});
+var _user$project$Main$main = {
+	main: _elm_lang$html$Html_App$program(
+		{init: _user$project$Main$init, update: _user$project$Main$update, view: _user$project$Main$view, subscriptions: _user$project$Main$subscriptions})
+};
