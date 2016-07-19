@@ -24,4 +24,4 @@ Once installed the libraries run on the root of the project:
 $ elm make PokeTest.elm PokeCard.elm
 ```
 
-Open index.html to play the game
+Open index.html to play the game or [click here](https://bahui80.github.io/PokeTest/) to play online.
